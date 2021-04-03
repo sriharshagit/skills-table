@@ -1,5 +1,4 @@
-const mongo = require('mongodb').MongoClient;
-const url = 'mongodb://localhost:27017';
+const collection = require('./db-setup');
 const port = 8000;
 const express = require("express");
 const app = express();
@@ -7,39 +6,34 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded());
 
-mongo.connect(url, { useNewUrlParser: true }, (err, client) => { 
-    if (err) {
-        console.error(err);
-        return;
-    }
-    const db = client.db('SKILLDB');
-    const collection = db.collection('Skills');
+
+
+const table  = 'Skills'
 
     app.post('/insert', async function (req, res) {
         try {
             let data = await checkRequest(req.body.data);
-            let dbResult = await collection.insertMany(data);
-            for (let i = 0; i < dbResult.ops.length; i++){
-                delete dbResult.ops[i]._id
+            for (let i = 0; i < data.length; i++){
+                await collection.insertUpdate(table, data[i].id, data[i]);
+
             }
-            res.status(200).send(dbResult.ops);
+            let responseReslut = await collection.getAllData(table);
+            console.log(responseReslut)
+            res.status(200).send('done');
 
         }
         catch (e) {
             console.log(e);
-            if (e == 'invalid request params') {
-                res.status(422).send('Invalid parameters Found');
-            }
-            else {
+
                 res.status(500).send(e);
-            }
+            
         }
 
      })
 
 
     app.listen(port, () => console.log(`api app listening on port ${port}!`));
-})
+
 
 // input formal in body {"data": [{"id":1,"skill":"react js"},{"id":7,"skill":"node js"},{"id":4,"skill":"laravel js"}]}
 
@@ -57,4 +51,3 @@ async function checkRequest(bodyParams) {
     
     return bodyParams;
 }
-
