@@ -19,7 +19,7 @@ const table  = 'Skills'
             }
             let responseReslut = await collection.getAllData(table);
             console.log(responseReslut)
-            res.status(200).send('done');
+            res.status(200).send(responseReslut);
 
         }
         catch (e) {
