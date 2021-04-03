@@ -6,7 +6,7 @@ input should be in request-body and format is  {"data": [{"id":1,"skill":"react 
 
 first clone this repo then run npm install command.
 
-make sure mongo db is running on port localhost:27017.
+make sure redis server is running in background
 
 now run node server.js command.
 
